@@ -1,0 +1,13 @@
+
+#
+# Minio profile
+#
+aws:
+  s3:
+    region: ap-northeast-1
+    # endpoint: http://localhost:9000
+    accessKeyId: xxx
+    secretAccessKey: xxxx
+    bucket: itgloria1003-upload-app-bucket
+
+  
