@@ -1,0 +1,44 @@
+public class S3Utils {
+
+
+    "    bucketName - the name of the Amazon S3 bucket (for example, bucket1). \n\n" +
+    "    key - the name of the object (for example, book.pdf). \n" +
+    "    path - the local path to the file (for example, C:/AWS/book.pdf). \n";
+  public void s3AsyncOps(
+    Region resgion,
+    String bucketName,
+    String key,
+    String path
+  ) {
+    S3AsyncClient client = S3AsyncClient.builder().region(region).build();
+
+    PutObjectRequest objectRequest = PutObjectRequest
+      .builder()
+      .bucket(bucketName)
+      .key(key)
+      .build();
+
+    // Put the object into the bucket
+    CompletableFuture<PutObjectResponse> future = client.putObject(
+      objectRequest,
+      AsyncRequestBody.fromFile(Paths.get(path))
+    );
+    future.whenComplete(
+      (resp, err) -> {
+        try {
+          if (resp != null) {
+            System.out.println("Object uploaded. Details: " + resp);
+          } else {
+            // Handle error
+            err.printStackTrace();
+          }
+        } finally {
+          // Only close the client when you are completely done with it
+          client.close();
+        }
+      }
+    );
+
+    future.join();
+  }
+}
